@@ -76,7 +76,7 @@ int main()
                     em_ordem(raiz);
                     printf("\n\n ");
                     system("pause");
-                    sleep();
+                    // sleep();
                     break;
         case 'P': printf("\n-----Pre-Ordem-----\n");
                     pre_ordem(raiz);
