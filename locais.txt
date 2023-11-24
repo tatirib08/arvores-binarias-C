@@ -1,6 +1,8 @@
-Brasil -> Salvador -> Natal -> Rio de Janeiro -> Cuiabá
-Itália -> Florença -> Santorini -> Roma -> Gênova 
+Brasil -> Salvador -> Cuiabá
+Itália -> Florença -> Roma 
 Austrália -> Sydney -> Darwin
-Japão -> Tóquio -> Osaka -> Hokkaido -> Quioto
-Espanha -> Valência -> Ibiza -> Barcelona 
+Japão -> Tóquio -> Quioto
+Espanha -> Ibiza -> Barcelona 
 Alemanha -> Frankfurt -> Berlim 
+Escócia -> Edimburgo -> Aberdeen
+Irlanda -> Dublin -> Waterford
