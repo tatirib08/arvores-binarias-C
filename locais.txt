@@ -1,8 +1,14 @@
-Brasil -> Salvador -> Cuiabá
-Itália -> Florença -> Roma 
-Austrália -> Sydney -> Darwin
-Japão -> Tóquio -> Quioto
+Brasil -> Salvador -> Rio de Janeiro
+Itália -> Roma 
+Austrália -> Sydney
+Japão -> Tóquio
 Espanha -> Ibiza -> Barcelona 
-Alemanha -> Frankfurt -> Berlim 
-Escócia -> Edimburgo -> Aberdeen
-Irlanda -> Dublin -> Waterford
+Escócia -> Edimburgo
+Irlanda -> Dublin
+Peru -> Machu Picchu
+China -> Pequim 
+República Dominicana -> Punta Cana
+Suíça -> Interlaken
+Grécia -> Atenas
+Canadá -> Niagara Falls
+México -> Cancún

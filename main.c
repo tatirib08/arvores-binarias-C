@@ -11,28 +11,39 @@ typedef struct nodo{
 
 }Sitio;
 
-typedef struct nodo{
+typedef struct arvore{
     int id, cont;
-    struct nodo *sim, *nao; 
+    struct arvore *sim, *nao; /* sim = esq, nao=dir */
 }Arvore; 
 
 void inserePais(Sitio **paises, Sitio **paisNovo); 
 void imprimePais(Sitio *pais); 
 void imprimeListaPaises(Sitio **paises);
 Sitio *criarPais(char paisNome[20], char cidade1[20], char cidade2[20]); 
-
 int escolheDestino(Arvore **raiz); 
+Arvore *inserirNodos(Arvore *raiz, int n);
+Arvore *criarArvore(Arvore *raiz);
+void em_ordem(Arvore *raiz); 
+void lerPerguntas(int id); 
+
 
 int main()
 {
     Sitio *paises = NULL;
-
+    Arvore *raiz = NULL; 
     Sitio *pais1 = criarPais("Brasil", "Salvador", "Cuiabá");
     inserePais(&paises, &pais1); 
     Sitio *pais2 = criarPais("Japão", "toquio", "osaka"); 
     inserePais(&paises, &pais2); 
-    
     imprimeListaPaises(&paises); 
+    printf("\n\n"); 
+    /* insere o primeiro nó */
+    raiz = criarArvore(raiz); 
+    /* insere o resto dos nós */
+    raiz = criarArvore(raiz); 
+    em_ordem(raiz); 
+    printf("\n\n");
+    lerPerguntas(2);
 
     return 0; 
 }
@@ -142,5 +153,121 @@ Sitio *criarPais(char paisNome[20], char cidade1[20], char cidade2[20])
     strcpy(pais->tipo, "pais");
     pais->turista1 = 0;
     pais->turista2 = 0;
+
+}
+
+Arvore *inserirNodos(Arvore *raiz, int n)
+{
+
+    if(raiz==NULL)
+    {
+        raiz = (Arvore*)malloc(sizeof(Arvore));
+        if(raiz==NULL)
+        {
+            exit(1);
+        }
+        raiz->id=n;
+        raiz->sim=raiz->nao=NULL;
+        return (raiz);
+    }
+    else
+    {
+        if(n < raiz->id)
+        {
+            /* vai para esquerda */
+            raiz->sim = inserirNodos(raiz->sim, n);
+        }
+        else
+        {
+            if(n > raiz->id)
+            {
+                /* vai para direita */
+                raiz->nao = inserirNodos(raiz->nao, n);
+            }
+            else
+            {
+                printf("Número repetido.\n");
+                return;
+            }
+            
+        }
+        return (raiz);
+    }
+}
+
+Arvore *criarArvore(Arvore *raiz)
+{
+    if(raiz == NULL)
+    {
+        raiz = inserirNodos(raiz, 16);
+    }
+    /* preenchendo os nós com os ids corretos */
+    else
+    {
+        raiz = inserirNodos(raiz, 8);
+        raiz = inserirNodos(raiz, 24);
+        raiz = inserirNodos(raiz, 4);
+        raiz = inserirNodos(raiz, 12);
+        raiz = inserirNodos(raiz, 20);
+        raiz = inserirNodos(raiz, 28);
+        raiz = inserirNodos(raiz, 2);
+        raiz = inserirNodos(raiz, 6);
+        raiz = inserirNodos(raiz, 10);
+        raiz = inserirNodos(raiz, 14);
+        raiz = inserirNodos(raiz, 18);
+        raiz = inserirNodos(raiz, 22);
+        raiz = inserirNodos(raiz, 26);
+        raiz = inserirNodos(raiz, 30);
+        raiz = inserirNodos(raiz, 1);
+        raiz = inserirNodos(raiz, 3);
+        raiz = inserirNodos(raiz, 5);
+        raiz = inserirNodos(raiz, 7);
+        raiz = inserirNodos(raiz, 9);
+        raiz = inserirNodos(raiz, 11);
+        raiz = inserirNodos(raiz, 13);
+        raiz = inserirNodos(raiz, 15);
+        raiz = inserirNodos(raiz, 17);
+        raiz = inserirNodos(raiz, 19);
+        raiz = inserirNodos(raiz, 21);
+        raiz = inserirNodos(raiz, 23);
+        raiz = inserirNodos(raiz, 25);
+        raiz = inserirNodos(raiz, 27);
+        raiz = inserirNodos(raiz, 29);
+        raiz = inserirNodos(raiz, 31);
+    }
+
+    return raiz; 
+
+}
+
+void lerPerguntas(int id)
+{
+    /* acessa o arquivo de perguntas */
+    FILE *ptr=NULL;
+    char pergunta[100];
+    int idPergunta=0; 
+    ptr = fopen("perguntas.txt", 'rt'); 
+    if(ptr==NULL)
+    {
+        printf("\nErro ao abrir o arquivo.\n");
+        return;
+    }
+    /* percorrer o arquivo */
+    while(!(feof(ptr)))
+    {
+        fscanf(ptr, "%d %[^\n\0]s", &idPergunta, pergunta); 
+        if(id == idPergunta) 
+        {
+            printf("%d : %s",idPergunta, pergunta);
+        }
+    }
+}
+
+void em_ordem(Arvore *raiz)
+{
+if (raiz == NULL) return;
+   em_ordem(raiz->sim);
+   printf("%d ", raiz->id);
+   em_ordem(raiz->nao);
 
 }

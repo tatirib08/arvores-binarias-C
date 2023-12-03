@@ -1,0 +1,31 @@
+1 Cancún
+2 Gosta de se aventurar escalando montanhas?
+3 Punta Cana
+4 Gosta de fazer atividades ao ar livre durante sua viagem?
+5 Niagara Falls 
+6 Gosta de realizar esportes aquáticos radicais?
+7 Interlaken
+8 Prefere viajar para locais montanhosos? 
+9 Machu Picchu
+10 Gosta de visitar lugares históricos com paisagens praianas?
+11 Pequim
+12 Prefere relaxar em locais com praia? 
+13 Salvador 
+14 Gosta de experimentar culinária local?
+15 Rio de Janeiro 
+16 Prefere viajar para lugares com paisagens naturais?
+17 Roma
+18 Gosta de realizar turismo religioso?
+19 Atenas
+20 Prefere arquitetura clássica a moderna?
+21 Barcelona
+22 É um apreciador de arte e gosta de passeios culturais?
+23 Sydney
+24 Gosta de visitar lugares históricos e paisagens urbanas?
+25 Tóquio
+26 Prefere capitais e cidades grandes?
+27 Ibiza
+28 Prefere visitar locais para festejar?
+29 Dublin
+30 Gosta de castelos e paisagens medievais?
+31 Edimburgo 
