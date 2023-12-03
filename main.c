@@ -19,7 +19,7 @@ typedef struct arvore{
 void inserePais(Sitio **paises, Sitio **paisNovo); 
 void imprimePais(Sitio *pais); 
 void imprimeListaPaises(Sitio **paises);
-Sitio *criarPais(char paisNome[20], char cidade1[20], char cidade2[20]); 
+Sitio *criarPais(char *paisNome, char *cidade1, char *cidade2); 
 int escolheDestino(Arvore **raiz); 
 Arvore *inserirNodos(Arvore *raiz, int n);
 Arvore *criarArvore(Arvore *raiz);
@@ -110,7 +110,7 @@ void imprimeListaPaises(Sitio **paises)
     }
 }
 
-Sitio *criarPais(char paisNome[20], char cidade1[20], char cidade2[20])
+Sitio *criarPais(char *paisNome, char *cidade1, char *cidade2)
 {
     Sitio *novo1, *novo2;
     novo1 = novo2 = NULL; 
@@ -187,7 +187,7 @@ Arvore *inserirNodos(Arvore *raiz, int n)
             else
             {
                 printf("Número repetido.\n");
-                return;
+                return NULL;
             }
             
         }
@@ -246,7 +246,7 @@ void lerPerguntas(int id)
     FILE *ptr=NULL;
     char pergunta[100];
     int idPergunta=0; 
-    ptr = fopen("perguntas.txt", 'rt'); 
+    ptr = fopen("perguntas.txt", "rt"); 
     if(ptr==NULL)
     {
         printf("\nErro ao abrir o arquivo.\n");
@@ -255,7 +255,7 @@ void lerPerguntas(int id)
     /* percorrer o arquivo */
     while(!(feof(ptr)))
     {
-        fscanf(ptr, "%d %[^\n\0]s", &idPergunta, pergunta); 
+        fscanf(ptr, "%d %[^\n]s", &idPergunta, pergunta); 
         if(id == idPergunta) 
         {
             printf("%d : %s",idPergunta, pergunta);
