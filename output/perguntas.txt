@@ -1,14 +1,14 @@
-1 Cancún
+1 Machu Picchu
 2 Gosta de se aventurar escalando montanhas?
-3 Punta Cana
+3 Pequim
 4 Gosta de fazer atividades ao ar livre durante sua viagem?
 5 Niagara Falls 
 6 Gosta de realizar esportes aquáticos radicais?
 7 Interlaken
 8 Prefere viajar para locais montanhosos? 
-9 Machu Picchu
+9 Cancún
 10 Gosta de visitar lugares históricos com paisagens praianas?
-11 Pequim
+11 Punta Cana 
 12 Prefere relaxar em locais com praia? 
 13 Salvador 
 14 Gosta de experimentar culinária local?

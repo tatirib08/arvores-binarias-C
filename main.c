@@ -20,7 +20,7 @@ void inserePais(Sitio **paises, Sitio **paisNovo);
 void imprimePais(Sitio *pais); 
 void imprimeListaPaises(Sitio **paises);
 Sitio *criarPais(char *paisNome, char *cidade1, char *cidade2); 
-int escolheDestino(Arvore **raiz); 
+int escolheDestino(Arvore *raiz); 
 Arvore *inserirNodos(Arvore *raiz, int n);
 Arvore *criarArvore(Arvore *raiz);
 void em_ordem(Arvore *raiz); 
@@ -31,19 +31,22 @@ int main()
 {
     Sitio *paises = NULL;
     Arvore *raiz = NULL; 
+    int id=0;
     Sitio *pais1 = criarPais("Brasil", "Salvador", "Cuiabá");
     inserePais(&paises, &pais1); 
     Sitio *pais2 = criarPais("Japão", "toquio", "osaka"); 
     inserePais(&paises, &pais2); 
     imprimeListaPaises(&paises); 
     printf("\n\n"); 
+
     /* insere o primeiro nó */
     raiz = criarArvore(raiz); 
     /* insere o resto dos nós */
     raiz = criarArvore(raiz); 
     em_ordem(raiz); 
     printf("\n\n");
-    lerPerguntas(2);
+
+    id = escolheDestino(raiz); 
 
     return 0; 
 }
@@ -156,6 +159,44 @@ Sitio *criarPais(char *paisNome, char *cidade1, char *cidade2)
 
 }
 
+int escolheDestino(Arvore *raiz)
+{
+    char resposta; 
+    int id; 
+    if(raiz==NULL)
+    {
+        return 0; 
+    }
+    
+    /* verificar se é uma folha */
+    if(raiz->sim !=NULL && raiz->nao!=NULL)
+    {
+        /* acessa a primeira pergunta id 16 */
+        lerPerguntas(raiz->id); 
+        scanf("%c", &resposta); 
+        getchar(); 
+        switch (resposta)
+        {
+        case 's':
+            id = escolheDestino(raiz->sim);
+            break;
+        case 'n':
+            id = escolheDestino(raiz->nao);
+            break;
+        default:
+            break;
+        }
+        return id;
+    }
+    else
+    {
+        /* se for folha, retorna o local */
+        lerPerguntas(raiz->id); 
+        return raiz->id; 
+    }
+    
+}
+
 Arvore *inserirNodos(Arvore *raiz, int n)
 {
 
@@ -258,7 +299,7 @@ void lerPerguntas(int id)
         fscanf(ptr, "%d %[^\n]s", &idPergunta, pergunta); 
         if(id == idPergunta) 
         {
-            printf("%d : %s",idPergunta, pergunta);
+            printf("\n%s\n", pergunta);
         }
     }
 }
