@@ -25,7 +25,7 @@ Arvore *inserirNodos(Arvore *raiz, int n);
 Arvore *criarArvore(Arvore *raiz);
 void em_ordem(Arvore *raiz); 
 void lerPerguntas(int id); 
-
+void addCliente(int id);
 
 int main()
 {
