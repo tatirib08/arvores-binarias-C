@@ -1,65 +1,140 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "string.h"
+
+#define NOME_ARQUIVO "perguntas_e_destinos.txt"
+
 /*  programa que escolhe os destinos das viagens */
-typedef struct nodo{
-    char lugar[20];
-    char tipo[10]; 
+typedef struct cidade{
+    int id;
     int turista1;
     int turista2; 
-    struct nodo *cidadeProx, *paisProx;
+    struct cidade *cidadeProx;
+}Cidade;
 
-}Sitio;
+typedef struct pais{
+    char nome[20];
+    int turista1;
+    int turista2; 
+    struct pais *paisProx;
+    Cidade *listaCidades;
+}Pais;
 
 typedef struct arvore{
     int id, cont;
     struct arvore *sim, *nao; /* sim = esq, nao=dir */
 }Arvore; 
 
-void inserePais(Sitio **paises, Sitio **paisNovo); 
-void imprimePais(Sitio *pais); 
-void imprimeListaPaises(Sitio **paises);
-Sitio *criarPais(char *paisNome, char *cidade1, char *cidade2); 
+Cidade *criarCidade(int id);
+
+Pais *criarPais(char *paisNome);
+
+void insereCidade(Cidade **listaCidades, Cidade *cidadeNova);
+
+void inserePais(Pais **listaPaises, Pais *paisNovo); 
+
+void imprimePais(Pais *pais); 
+
+void imprimeCidade(Cidade *cidade); 
+
+void imprimeListaPaises(Pais *listaPaises);
+
 int escolheDestino(Arvore *raiz); 
+
 Arvore *inserirNodos(Arvore *raiz, int n);
+
 Arvore *criarArvore(Arvore *raiz);
+
 void em_ordem(Arvore *raiz); 
-void lerPerguntas(int id); 
+
+void lerPerguntaOuDestino(int id, char *string); 
+
+void prepararEstruturas(Arvore **raiz, Pais **listaPaises);
+
+void prepararPaisesECidades(Pais **listaPaises);
+
+void prepararArvore(Arvore **raiz);
+
+void menu(Arvore *raiz, Pais **listaPaises);
+
+void mostrarTitulo();
 
 
 int main()
-{
-    Sitio *paises = NULL;
+{    
+    Pais *listaPaises = NULL;
     Arvore *raiz = NULL; 
-    int id=0;
-    Sitio *pais1 = criarPais("Brasil", "Salvador", "Cuiabá");
-    inserePais(&paises, &pais1); 
-    Sitio *pais2 = criarPais("Japão", "toquio", "osaka"); 
-    inserePais(&paises, &pais2); 
-    imprimeListaPaises(&paises); 
-    printf("\n\n"); 
 
-    /* insere o primeiro nó */
-    raiz = criarArvore(raiz); 
-    /* insere o resto dos nós */
-    raiz = criarArvore(raiz); 
-    em_ordem(raiz); 
-    printf("\n\n");
+    prepararEstruturas(&raiz, &listaPaises);
 
-    id = escolheDestino(raiz); 
+    menu(raiz, &listaPaises);
 
     return 0; 
 }
 
-void inserePais(Sitio **paises, Sitio **paisNovo)
+
+void prepararEstruturas(Arvore **raiz, Pais **listaPaises)
 {
-    Sitio *aux=NULL;
-    aux = *paises; 
+    prepararPaisesECidades(listaPaises);
+
+    prepararArvore(raiz);
+}
+
+void menu(Arvore *raiz, Pais **listaPaises)
+{
+    
+    puts("|--------------VIAGENS ED1--------------|");
+
+    while(1)
+    {
+        int escolhaId = 0;
+        escolhaId = escolheDestino(raiz); 
+    }
+
+}
+
+void prepararPaisesECidades(Pais **listaPaises)
+{
+    //ver jeito melhor pq esse ta bomba
+    Pais *brasil = criarPais("Brasil");
+    Cidade *salvador = criarCidade(13);
+    insereCidade(&(brasil->listaCidades), salvador);
+    Cidade *rio_de_janeiro = criarCidade(15);
+    insereCidade(&(brasil->listaCidades), rio_de_janeiro);
+
+    inserePais(listaPaises, brasil);
+
+    Pais *japao = criarPais("Japão");
+    Cidade *toquio = criarCidade(25);
+    insereCidade(&(japao->listaCidades), toquio);
+
+    inserePais(listaPaises, japao);
+}
+
+void prepararArvore(Arvore **raiz)
+{
+    /* insere o primeiro nó */
+    *raiz = criarArvore(*raiz); 
+    /* insere o resto dos nós */
+    *raiz = criarArvore(*raiz); 
+    em_ordem(*raiz); 
+    printf("\n\n");
+}
+
+void mostrarTitulo()
+{
+    int tam = 16;
+}
+
+void inserePais(Pais **listaPaises, Pais *paisNovo)
+{
+    Pais *aux = NULL;
+    aux = *listaPaises; 
 
     /* inserir no inicio */
-    if(*paises == NULL)
+    if(*listaPaises == NULL)
     {
-        (*paises) = *paisNovo; 
+        (*listaPaises) = paisNovo; 
     }
     else
     {
@@ -67,82 +142,69 @@ void inserePais(Sitio **paises, Sitio **paisNovo)
         {
             aux = aux->paisProx;
         }
-        aux->paisProx = *paisNovo;
+        aux->paisProx = paisNovo;
     }
-
 }
 
-void imprimePais(Sitio *pais)
+void imprimePais(Pais *pais)
 {
-    Sitio *aux=NULL; 
-    aux = pais; 
-    if(aux == NULL)
+    if(pais == NULL)
+    {
+        puts("País está nulo\n");
+        return;
+    }
+    if(pais->listaCidades == NULL)
+    {
+        puts("País sem cidades\n");
+        return;
+    }
+
+    printf("%s", pais->nome);
+
+    Cidade *cidadeAtual = pais->listaCidades;
+    while(cidadeAtual != NULL)
+    {   
+        printf("-> ");
+        imprimeCidade(cidadeAtual);
+        cidadeAtual = cidadeAtual->cidadeProx;
+    }
+    puts("");
+}
+
+void imprimeCidade(Cidade *cidade)
+{
+    if(cidade == NULL)
+    {
+        puts("Cidade está nula\n");
+        return;
+    }
+
+    char nome[20];
+    lerPerguntaOuDestino(cidade->id, nome);
+    printf("%s", nome); 
+}
+
+void imprimeListaPaises(Pais *paises)
+{
+    Pais *paisAtual = NULL; 
+    paisAtual = paises;
+
+    if(paisAtual == NULL)
     {
         printf("A lista está vazia!\n");
         return;
     }
-
-    /* país */
-    printf("%s ", aux->lugar);
-    
-    /* cidades */
-    aux = aux->cidadeProx;
-    /* cidade 1 */
-    printf("%s ", aux->lugar);
-    
-    /* cidade 2 */
-    aux = aux->cidadeProx;
-    printf("%s ", aux->lugar); 
-    
-}
-
-void imprimeListaPaises(Sitio **paises)
-{
-    Sitio *aux = NULL; 
-    aux = *paises;
-    if(aux == NULL)
+    while(paisAtual != NULL)
     {
-        printf("A lista está vazia!\n");
-        return;
-    }
-    while(aux!=NULL)
-    {
-        imprimePais(aux); 
-        printf("->"); 
-        aux = aux->paisProx; 
+        imprimePais(paisAtual); 
+        paisAtual = paisAtual->paisProx; 
     }
 }
 
-Sitio *criarPais(char *paisNome, char *cidade1, char *cidade2)
+Pais *criarPais(char *paisNome)
 {
-    Sitio *novo1, *novo2;
-    novo1 = novo2 = NULL; 
-    novo1 = (Sitio*)malloc(sizeof(Sitio)); 
-    novo2 = (Sitio*)malloc(sizeof(Sitio)); 
-    if(novo1==NULL || novo2==NULL)
-    {
-        printf("Espaço de memória não foi criado!\n");
-        return NULL; 
-    }
-
-    /* cidade 1 */
-    novo1->cidadeProx = novo2;
-    strcpy(novo1->lugar, cidade1);
-    novo1->paisProx = NULL;
-    strcpy(novo1->tipo, "cidade");
-    novo1->turista1 = 0;
-    novo1->turista2 = 0;
-
-    /* cidade 2 */
-    novo2->cidadeProx = NULL;
-    strcpy(novo2->lugar, cidade2);
-    novo2->paisProx = NULL;
-    strcpy(novo2->tipo, "cidade");
-    novo2->turista1 = 0;
-    novo2->turista2 = 0;
-
-    Sitio *pais;
-    pais = (Sitio*)malloc(sizeof(Sitio)); 
+    Pais *pais;
+    pais = (Pais*)malloc(sizeof(Pais)); 
 
     if(pais==NULL)
     {
@@ -150,13 +212,52 @@ Sitio *criarPais(char *paisNome, char *cidade1, char *cidade2)
         return NULL; 
     }
 
-    pais->cidadeProx = novo1;
-    strcpy(pais->lugar, paisNome);
+    strcpy(pais->nome, paisNome);
     pais->paisProx = NULL;
-    strcpy(pais->tipo, "pais");
+    pais->listaCidades = NULL;
     pais->turista1 = 0;
     pais->turista2 = 0;
 
+    return pais;
+}
+
+void insereCidade(Cidade **listaCidades, Cidade *cidadeNova)
+{
+    Cidade *cidadeAtual = NULL;
+    cidadeAtual = *listaCidades; 
+
+    /* inserir no inicio */
+    if(*listaCidades == NULL)
+    {
+        (*listaCidades) = cidadeNova; 
+    }
+    else
+    {
+        while(cidadeAtual->cidadeProx!=NULL)
+        {
+            cidadeAtual = cidadeAtual->cidadeProx;
+        }
+        cidadeAtual->cidadeProx = cidadeNova;
+    }
+}
+
+Cidade *criarCidade(int id)
+{
+    Cidade *cidade;
+    cidade = (Cidade*)malloc(sizeof(Cidade)); 
+
+    if(cidade==NULL)
+    {
+        printf("Espaço de memória não foi criado!\n");
+        return NULL; 
+    }
+
+    cidade->id = id;
+    cidade->cidadeProx = NULL;
+    cidade->turista1 = 0;
+    cidade->turista2 = 0;
+
+    return cidade;
 }
 
 int escolheDestino(Arvore *raiz)
@@ -172,7 +273,9 @@ int escolheDestino(Arvore *raiz)
     if(raiz->sim !=NULL && raiz->nao!=NULL)
     {
         /* acessa a primeira pergunta id 16 */
-        lerPerguntas(raiz->id); 
+        char pergunta[200];
+        lerPerguntaOuDestino(raiz->id, pergunta); 
+        printf("%s\n", pergunta);
         scanf("%c", &resposta); 
         getchar(); 
         switch (resposta)
@@ -191,7 +294,9 @@ int escolheDestino(Arvore *raiz)
     else
     {
         /* se for folha, retorna o local */
-        lerPerguntas(raiz->id); 
+        char destino[200];
+        lerPerguntaOuDestino(raiz->id, destino);
+        printf("%s\n", destino);
         return raiz->id; 
     }
     
@@ -281,13 +386,13 @@ Arvore *criarArvore(Arvore *raiz)
 
 }
 
-void lerPerguntas(int id)
+void lerPerguntaOuDestino(int id, char *string)
 {
     /* acessa o arquivo de perguntas */
     FILE *ptr=NULL;
-    char pergunta[100];
-    int idPergunta=0; 
-    ptr = fopen("perguntas.txt", "rt"); 
+    char retorno[200];
+    int idLido = 0; 
+    ptr = fopen(NOME_ARQUIVO, "rt"); 
     if(ptr==NULL)
     {
         printf("\nErro ao abrir o arquivo.\n");
@@ -296,10 +401,10 @@ void lerPerguntas(int id)
     /* percorrer o arquivo */
     while(!(feof(ptr)))
     {
-        fscanf(ptr, "%d %[^\n]s", &idPergunta, pergunta); 
-        if(id == idPergunta) 
+        fscanf(ptr, "%d %[^\n]s", &idLido, retorno); 
+        if(id == idLido) 
         {
-            printf("\n%s\n", pergunta);
+            strcpy(string, retorno);
         }
     }
 }
