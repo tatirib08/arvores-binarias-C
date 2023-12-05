@@ -29,6 +29,12 @@ typedef struct arvore{
     struct arvore *sim, *nao; 
 }Arvore; 
 
+typedef struct  nodo
+{
+    char nome[100]; 
+    struct nodo *prox; 
+}Nodo;
+
 Cidade *criarCidade(int id, char* nome);
 
 Pais *criarPais(char *paisNome);
@@ -78,6 +84,18 @@ void menu(Arvore *raiz, Pais **listaPaises);
 void addCliente(Cidade *destino, int tipoCliente); 
 
 void imprimeImg(char *nomeArq);
+
+/* funções para fazer 
+
+    listar todos os paises visitados pelos turistas tipo 1
+    listar todos os paises visitados pelos turistas tipo 2
+    listar todos os paises visitados no total
+    listar todos os paises não visitados
+    mostrar o país e o sítio mais visitado pelos dois tipos de clientes
+
+*/
+
+void contarClientes(Pais *listaPaises, int tipo);
 
 int main()
 {    
@@ -129,6 +147,10 @@ void menu(Arvore *raiz, Pais **listaPaises)
         
         printf("Obrigado pela preferência!\n\n");
     }
+    contarClientes(*listaPaises, 1); 
+    contarClientes(*listaPaises, 2); 
+    contarClientes(*listaPaises, 3);
+    contarClientes(*listaPaises, 0);
 
 }
 
@@ -698,4 +720,74 @@ void imprimeImg(char *nomeArq)
         printf("%s\n", linha); 
     }
     fclose(ptr);
+}
+
+void contarClientes(Pais *listaPaises, int tipo)
+{
+    if(listaPaises==NULL)
+    {
+        return; 
+    }
+    Pais *aux=NULL;
+    aux = listaPaises;  
+    if(tipo==1)
+    {
+        /* vai listar os países com clientes do tipo 1 */
+        printf("\n\n----LOCAIS VISITADOS PELOS CLIENTES TIPO 1-----\n");
+    }
+    if(tipo == 2)
+    {
+        /* vai listar os países com clientes do tipo 2 */
+        printf("\n\n----LOCAIS VISITADOS PELOS CLIENTES TIPO 2-----\n");
+    }
+    if(tipo == 3)
+    {
+        /* vai listar os países visitados no geral */
+        printf("\n\n----LOCAIS VISITADOS NO TOTAL-----\n");
+    }
+    if(tipo==0)
+    {
+        /* vai listar os países não visitados */
+        printf("\n\n----LOCAIS NÃO VISITADOS-----\n");
+    }
+    while (aux!=NULL)
+    {
+        while (aux->listaCidades!=NULL)
+        {
+            switch (tipo)
+            {
+            case 1:  
+                if(aux->listaCidades->turista1!=0)
+                { 
+                    printf("%s : %s\n",aux->nome ,aux->listaCidades->nome); 
+                }
+                break;
+            case 2: 
+                if(aux->listaCidades->turista2!=0)
+                {
+                    printf("%s : %s\n", aux->nome ,aux->listaCidades->nome); 
+                }
+                break; 
+            case 3:
+                if(aux->listaCidades->turista1!=0 || aux->listaCidades->turista2!=0)
+                {
+                    printf("%s : %s\n", aux->nome ,aux->listaCidades->nome);
+                }
+                break;
+            case 0:
+                if(aux->listaCidades->turista1==0 && aux->listaCidades->turista2==0)
+                {
+                    printf("%s : %s\n", aux->nome ,aux->listaCidades->nome);
+                }
+                break;
+            default:
+                break;
+            }
+            aux->listaCidades = aux->listaCidades->cidadeProx; 
+        }
+        aux = aux->paisProx; 
+        
+    }
+    
+
 }
