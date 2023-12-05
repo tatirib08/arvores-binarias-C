@@ -25,7 +25,8 @@ typedef struct pais{
 
 typedef struct arvore{
     int id, cont;
-    struct arvore *sim, *nao; /* sim = esq, nao=dir */
+    /* sim = esq, nao=dir */
+    struct arvore *sim, *nao; 
 }Arvore; 
 
 Cidade *criarCidade(int id, char* nome);
@@ -45,6 +46,10 @@ void imprimirDestinoEscolhido(Pais *listaPaises, Cidade *cidade);
 Pais *buscarPaisPorNome(Pais *listaPaises, char *nomeCidade);
 
 Pais *buscarPaisPorCidade(Pais *listaPaises, int idCidade);
+
+void atenderTipo1(Pais* listaPaises);
+
+void atenderTipo2(Pais* listaPaises, Arvore *raiz);
 
 void imprimeListaPaises(Pais *listaPaises, int debug);
 
@@ -115,55 +120,64 @@ void menu(Arvore *raiz, Pais **listaPaises)
 
         if(op==1)
         {
-            system("cls||clear");
-            /* Exibe a lista e recebe destino desejado */
-
-            Cidade *cidade = NULL;
-            char nomeDestinoUsuario[200];
-            while(cidade == NULL)
-            {
-                imprimeListaPaises(*listaPaises, 0);
-
-                printf("Informe o destino (nome da cidade): ");
-
-                scanf("%[^\n]", nomeDestinoUsuario);
-                while (getchar() != '\n'); //limpa buffer 
-
-                cidade = buscarCidadePorNome(*listaPaises, nomeDestinoUsuario);
-                
-                if(cidade == NULL)
-                {
-                    system("cls||clear");
-                    puts("Cidade não existe no catálogo. ");
-                    puts("Aperte qualquer tecla para tentar novamente.");
-                    getchar();
-                }
-            }           
-
-            addCliente(cidade, 1);  
-            
-            imprimirDestinoEscolhido(*listaPaises, cidade);
-
+            atenderTipo1(*listaPaises);
         }
         if(op==2)
         {
-            system("cls||clear");
-            /* Roda a arvore de decisão */
-
-            int escolhaId = 0;
-
-            escolhaId = escolheDestino(raiz); 
-           
-            Cidade *cidadeEscolhida = buscarCidadePorId(*listaPaises, escolhaId);
-
-            addCliente(cidadeEscolhida, 2); 
-
-            imprimirDestinoEscolhido(*listaPaises, cidadeEscolhida);
+            atenderTipo2(*listaPaises, raiz);
         }
         
         printf("Obrigado pela preferência!\n\n");
     }
 
+}
+
+void atenderTipo1(Pais *listaPaises)
+{
+    system("cls||clear");
+    /* Exibe a lista e recebe destino desejado */
+
+    Cidade *cidade = NULL;
+    char nomeDestinoUsuario[200];
+    while(cidade == NULL)
+    {
+        imprimeListaPaises(listaPaises, 0);
+
+        printf("Informe o destino (nome da cidade): ");
+
+        scanf("%[^\n]", nomeDestinoUsuario);
+        while (getchar() != '\n'); //limpa buffer 
+
+        cidade = buscarCidadePorNome(listaPaises, nomeDestinoUsuario);
+        
+        if(cidade == NULL)
+        {
+            system("cls||clear");
+            puts("Cidade não existe no catálogo. ");
+            puts("Aperte qualquer tecla para tentar novamente.");
+            getchar();
+        }
+    }           
+
+    addCliente(cidade, 1);  
+    
+    imprimirDestinoEscolhido(listaPaises, cidade);
+}
+
+void atenderTipo2(Pais *listaPaises, Arvore* raiz)
+{
+    system("cls||clear");
+    /* Roda a arvore de decisão */
+
+    int escolhaId = 0;
+
+    escolhaId = escolheDestino(raiz); 
+    
+    Cidade *cidadeEscolhida = buscarCidadePorId(listaPaises, escolhaId);
+
+    addCliente(cidadeEscolhida, 2); 
+
+    imprimirDestinoEscolhido(listaPaises, cidadeEscolhida);
 }
 
 void prepararPaisesECidades(Pais **listaPaises)
