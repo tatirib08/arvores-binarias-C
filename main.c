@@ -59,10 +59,11 @@ void prepararArvore(Arvore **raiz);
 
 void menu(Arvore *raiz, Pais **listaPaises);
 
-void mostrarTitulo();
-
 void addCliente(int id, Cidade *destino, int tipoCliente); 
 
+void imprimeImg(char *nomeArq);
+
+void imprimirDestinos(); 
 
 int main()
 {    
@@ -88,17 +89,50 @@ void menu(Arvore *raiz, Pais **listaPaises)
 {
     
     puts("|--------------VIAGENS ED1--------------|");
-    // Cidade *destino = (*listaPaises)->paisProx->listaCidades->cidadeProx;  
-    
-    while(1)
+    char escolha; 
+    int op; 
+    printf("\n\n"); 
+    imprimeImg("aviao1.txt"); 
+    /* mostrar a lista de destinos possíveis */
+    imprimirDestinos(); 
+
+    printf("Aperte 1 caso já saiba qual é o destino da sua viagem.\n");
+    printf("Aperte 2 caso ainda esteja indeciso.\n"); 
+    scanf("%d", &op); 
+    getchar(); 
+    while(op==1 || op==2)
     {
+        if(op==1)
+        {
+            /* já escolheu o destino */
+            printf("Informe o destino ");
+        }
+        if(op==2)
+        {
+            /* vai escolher o destino */
+            int escolhaId = 0;
+            escolhaId = escolheDestino(raiz); 
+            Cidade *cidadeEscolhida = buscarCidade(*listaPaises, escolhaId);
+            addCliente(escolhaId, cidadeEscolhida, 2); 
+            imprimeCidade(cidadeEscolhida);
+        }
         
-        int escolhaId = 0;
-        escolhaId = escolheDestino(raiz); 
-        Cidade *cidadeEscolhida = buscarCidade(*listaPaises, escolhaId);
-        addCliente(escolhaId, cidadeEscolhida, 2); 
-        imprimeCidade(cidadeEscolhida);
-        
+        printf("Obriga pela preferência!");
+        printf("Deseja continuar?(s/n)");
+        scanf("%c", &escolha); 
+        getchar(); 
+        if(escolha=='s')
+        {
+            printf("Aperte 1 caso já saiba qual é o destino da sua viagem.\n");
+            printf("Aperte 2 caso ainda esteja indeciso.\n"); 
+            scanf("%d", &op); 
+            getchar(); 
+        }
+        else
+        {
+            printf("Finalizando...\n"); 
+            op=0; 
+        }
     }
 
 }
@@ -152,11 +186,6 @@ Cidade *buscarCidade(Pais *listaPaises, int id)
 
         paisAtual = paisAtual->paisProx;
     }
-}
-
-void mostrarTitulo()
-{
-    int tam = 16;
 }
 
 void addCliente(int id, Cidade *destino, int tipoCliente)
@@ -461,6 +490,7 @@ void lerPerguntaOuDestino(int id, char *string)
             strcpy(string, retorno);
         }
     }
+    fclose(ptr); 
 }
 
 void em_ordem(Arvore *raiz)
@@ -470,4 +500,52 @@ if (raiz == NULL) return;
    printf("%d ", raiz->id);
    em_ordem(raiz->nao);
 
+}
+
+void imprimeImg(char *nomeArq)
+{
+    FILE *ptr=NULL;
+    char file[50];
+    char linha[200];
+    strcpy(file, nomeArq); 
+    ptr = fopen(file, "rt");
+    if(ptr==NULL)
+    {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+    /* imprimir texto */
+    while(!feof(ptr))
+    {
+        fscanf(ptr, "%[^\n]s*c", linha); 
+        getc(ptr);
+        // fgets(linha, 200, ptr); 
+        // printf("%s", retorno); 
+        printf("%s\n", linha); 
+    }
+    fclose(ptr);
+}
+
+void imprimirDestinos()
+{
+    int linha=1; 
+    FILE *ptr=NULL;
+    char destino[100]; 
+    ptr=fopen("perguntas_e_destinos.txt", "rt");
+    if(ptr==NULL)
+    {
+        printf("Erro ao abrir o arquivo.");
+        return;
+    }
+    while(!feof(ptr))
+    {
+        fscanf(ptr, "%[^\n]s*c", destino); 
+        getc(ptr);
+        if(linha%2==1)
+        {
+            printf("%s\n", destino); 
+        }
+        linha++; 
+    }
+    fclose(ptr); 
 }
