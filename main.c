@@ -33,11 +33,11 @@ void insereCidade(Cidade **listaCidades, Cidade *cidadeNova);
 
 void inserePais(Pais **listaPaises, Pais *paisNovo); 
 
-void imprimePais(Pais *pais); 
+void imprimePais(Pais *pais, int debug); 
 
-void imprimeCidade(Cidade *cidade); 
+void imprimeCidade(Cidade *cidade, int debug); 
 
-void imprimeListaPaises(Pais *listaPaises);
+void imprimeListaPaises(Pais *listaPaises, int debug);
 
 int escolheDestino(Arvore *raiz); 
 
@@ -63,8 +63,6 @@ void addCliente(int id, Cidade *destino, int tipoCliente);
 
 void imprimeImg(char *nomeArq);
 
-void imprimirDestinos(); 
-
 int main()
 {    
     Pais *listaPaises = NULL;
@@ -77,7 +75,6 @@ int main()
     return 0; 
 }
 
-
 void prepararEstruturas(Arvore **raiz, Pais **listaPaises)
 {
     prepararPaisesECidades(listaPaises);
@@ -88,14 +85,15 @@ void prepararEstruturas(Arvore **raiz, Pais **listaPaises)
 void menu(Arvore *raiz, Pais **listaPaises)
 {
     
-    puts("|--------------VIAGENS ED1--------------|");
+    puts("|--------------AGÊNCIA DE VIAGENS--------------|");
     char escolha; 
     int op; 
     printf("\n\n"); 
     imprimeImg("aviao1.txt"); 
+    printf("\n\n"); 
     /* mostrar a lista de destinos possíveis */
-    imprimirDestinos(); 
-
+    imprimeListaPaises(*listaPaises, 0);
+    printf("\n\n"); 
     printf("Aperte 1 caso já saiba qual é o destino da sua viagem.\n");
     printf("Aperte 2 caso ainda esteja indeciso.\n"); 
     scanf("%d", &op); 
@@ -114,7 +112,7 @@ void menu(Arvore *raiz, Pais **listaPaises)
             escolhaId = escolheDestino(raiz); 
             Cidade *cidadeEscolhida = buscarCidade(*listaPaises, escolhaId);
             addCliente(escolhaId, cidadeEscolhida, 2); 
-            imprimeCidade(cidadeEscolhida);
+            imprimeCidade(cidadeEscolhida, 0);
         }
         
         printf("Obriga pela preferência!");
@@ -231,7 +229,7 @@ void inserePais(Pais **listaPaises, Pais *paisNovo)
     }
 }
 
-void imprimePais(Pais *pais)
+void imprimePais(Pais *pais, int debug)
 {
     if(pais == NULL)
     {
@@ -244,19 +242,19 @@ void imprimePais(Pais *pais)
         return;
     }
 
-    printf("%s", pais->nome);
+    printf("-> %s\n", pais->nome);
 
     Cidade *cidadeAtual = pais->listaCidades;
+    
     while(cidadeAtual != NULL)
     {   
-        printf("-> ");
-        imprimeCidade(cidadeAtual);
+        imprimeCidade(cidadeAtual, debug);
         cidadeAtual = cidadeAtual->cidadeProx;
     }
     puts("");
 }
 
-void imprimeCidade(Cidade *cidade)
+void imprimeCidade(Cidade *cidade, int debug)
 {
     if(cidade == NULL)
     {
@@ -266,22 +264,29 @@ void imprimeCidade(Cidade *cidade)
 
     char nome[20];
     lerPerguntaOuDestino(cidade->id, nome);
-    printf("%s(tipo 1: %d, tipo 2: %d)", nome, cidade->turista1, cidade->turista2); 
+        puts("  |");
+        printf("  --> %s", nome); 
+
+    if(debug)
+    {
+        printf("(tipo 1: %d, tipo 2: %d)", cidade->turista1, cidade->turista2); 
+    }
+    puts("");
 }
 
-void imprimeListaPaises(Pais *paises)
+void imprimeListaPaises(Pais *paises, int debug)
 {
     Pais *paisAtual = NULL; 
     paisAtual = paises;
 
-    if(paisAtual == NULL)
+    if(paises == NULL)
     {
         printf("A lista está vazia!\n");
         return;
     }
     while(paisAtual != NULL)
     {
-        imprimePais(paisAtual); 
+        imprimePais(paisAtual, debug); 
         paisAtual = paisAtual->paisProx; 
     }
 }
@@ -519,33 +524,7 @@ void imprimeImg(char *nomeArq)
     {
         fscanf(ptr, "%[^\n]s*c", linha); 
         getc(ptr);
-        // fgets(linha, 200, ptr); 
-        // printf("%s", retorno); 
         printf("%s\n", linha); 
     }
     fclose(ptr);
-}
-
-void imprimirDestinos()
-{
-    int linha=1; 
-    FILE *ptr=NULL;
-    char destino[100]; 
-    ptr=fopen("perguntas_e_destinos.txt", "rt");
-    if(ptr==NULL)
-    {
-        printf("Erro ao abrir o arquivo.");
-        return;
-    }
-    while(!feof(ptr))
-    {
-        fscanf(ptr, "%[^\n]s*c", destino); 
-        getc(ptr);
-        if(linha%2==1)
-        {
-            printf("%s\n", destino); 
-        }
-        linha++; 
-    }
-    fclose(ptr); 
 }
