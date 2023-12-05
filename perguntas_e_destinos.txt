@@ -1,31 +1,31 @@
 1 Peru,Machu Picchu
-2 Gosta de se aventurar escalando montanhas?(s/n)
+2 Gosta de se aventurar escalando montanhas? (s/n)
 3 China,Pequim
-4 Gosta de fazer atividades ao ar livre durante sua viagem?(s/n)
-5 Canadá,Niagara Falls 
-6 Gosta de realizar esportes aquáticos radicais?(s/n)
+4 Gosta de fazer atividades ao ar livre durante sua viagem? (s/n)
+5 Canadá,Niagara Falls
+6 Gosta de realizar esportes aquáticos radicais? (s/n)
 7 Suíça,Interlaken
-8 Prefere viajar para locais montanhosos?(s/n)
+8 Prefere viajar para locais montanhosos? (s/n)
 9 México,Cancún
-10 Gosta de visitar lugares históricos com paisagens praianas?(s/n)
-11 República Dominicana,Punta Cana 
-12 Prefere relaxar em locais com praia?(s/n)
-13 Brasil,Salvador 
-14 Gosta de experimentar culinária local?(s/n)
-15 Brasil,Rio de Janeiro 
-16 Prefere viajar para lugares com paisagens naturais?(s/n)
+10 Gosta de visitar lugares históricos com paisagens praianas? (s/n)
+11 República Dominicana,Punta Cana
+12 Prefere relaxar em locais com praia? (s/n)
+13 Brasil,Salvador
+14 Gosta de experimentar culinária local? (s/n)
+15 Brasil,Rio de Janeiro
+16 Prefere viajar para lugares com paisagens naturais? (s/n)
 17 Itália,Roma
-18 Gosta de realizar turismo religioso?(s/n)
+18 Gosta de realizar turismo religioso? (s/n)
 19 Grécia,Atenas
-20 Prefere arquitetura clássica a moderna?(s/n)
+20 Prefere arquitetura clássica a moderna? (s/n)
 21 Espanha,Barcelona
-22 É um apreciador de arte e gosta de passeios culturais?(s/n)
+22 É um apreciador de arte e gosta de passeios culturais? (s/n)
 23 Austrália,Sydney
-24 Gosta de visitar lugares históricos e paisagens urbanas?(s/n)
+24 Gosta de visitar lugares históricos e paisagens urbanas? (s/n)
 25 Japão,Tóquio
-26 Prefere capitais e cidades grandes?(s/n)
+26 Prefere capitais e cidades grandes? (s/n)
 27 Espanha,Ibiza
-28 Prefere visitar locais para festejar?(s/n)
+28 Prefere visitar locais para festejar? (s/n)
 29 Irlanda,Dublin
-30 Gosta de castelos e paisagens medievais?(s/n)
-31 Escócia,Edimburgo 
+30 Gosta de castelos e paisagens medievais? (s/n)
+31 Escócia,Edimburgo

@@ -3,17 +3,20 @@
 #include "string.h"
 
 #define NOME_ARQUIVO "perguntas_e_destinos.txt"
+#define QTD_CIDADES 16
+#define TAM_NOME 200
 
 /*  programa que escolhe os destinos das viagens */
 typedef struct cidade{
     int id;
+    char nome[TAM_NOME];
     int turista1;
     int turista2; 
     struct cidade *cidadeProx;
 }Cidade;
 
 typedef struct pais{
-    char nome[20];
+    char nome[TAM_NOME];
     int turista1;
     int turista2; 
     struct pais *paisProx;
@@ -25,7 +28,7 @@ typedef struct arvore{
     struct arvore *sim, *nao; /* sim = esq, nao=dir */
 }Arvore; 
 
-Cidade *criarCidade(int id);
+Cidade *criarCidade(int id, char* nome);
 
 Pais *criarPais(char *paisNome);
 
@@ -37,11 +40,19 @@ void imprimePais(Pais *pais, int debug);
 
 void imprimeCidade(Cidade *cidade, int debug); 
 
+void imprimirDestinoEscolhido(Pais *listaPaises, Cidade *cidade);
+
+Pais *buscarPaisPorNome(Pais *listaPaises, char *nomeCidade);
+
+Pais *buscarPaisPorCidade(Pais *listaPaises, int idCidade);
+
 void imprimeListaPaises(Pais *listaPaises, int debug);
 
 int escolheDestino(Arvore *raiz); 
 
-Cidade *buscarCidade(Pais *listaPaises, int id);
+Cidade *buscarCidadePorId(Pais *listaPaises, int id);
+
+Cidade *buscarCidadePorNome(Pais *listaPaises, char *nomeCidade);
 
 Arvore *inserirNodos(Arvore *raiz, int n);
 
@@ -59,7 +70,7 @@ void prepararArvore(Arvore **raiz);
 
 void menu(Arvore *raiz, Pais **listaPaises);
 
-void addCliente(int id, Cidade *destino, int tipoCliente); 
+void addCliente(Cidade *destino, int tipoCliente); 
 
 void imprimeImg(char *nomeArq);
 
@@ -67,6 +78,8 @@ int main()
 {    
     Pais *listaPaises = NULL;
     Arvore *raiz = NULL; 
+
+    system("cls||clear");
 
     prepararEstruturas(&raiz, &listaPaises);
 
@@ -84,73 +97,122 @@ void prepararEstruturas(Arvore **raiz, Pais **listaPaises)
 
 void menu(Arvore *raiz, Pais **listaPaises)
 {
-    
-    puts("|--------------AGÊNCIA DE VIAGENS--------------|");
-    char escolha; 
-    int op; 
-    printf("\n\n"); 
-    imprimeImg("aviao1.txt"); 
-    printf("\n\n"); 
-    /* mostrar a lista de destinos possíveis */
-    imprimeListaPaises(*listaPaises, 0);
-    printf("\n\n"); 
-    printf("Aperte 1 caso já saiba qual é o destino da sua viagem.\n");
-    printf("Aperte 2 caso ainda esteja indeciso.\n"); 
-    scanf("%d", &op); 
-    getchar(); 
+    int op = 1; 
     while(op==1 || op==2)
     {
+        puts("|--------------------AGÊNCIA DE VIAGENS-------------------|");
+        char escolha; 
+     
+        printf("\n\n"); 
+        imprimeImg("aviao1.txt"); 
+        printf("\n\n"); 
+        printf("\n\n"); 
+        printf("Aperte 1 caso já saiba qual é o destino da sua viagem.\n");
+        printf("Aperte 2 caso ainda esteja indeciso.\n"); 
+        printf("Aperte 3 para sair.\n");
+        scanf("%d", &op); 
+        getchar(); 
+
         if(op==1)
         {
-            /* já escolheu o destino */
-            printf("Informe o destino ");
+            system("cls||clear");
+            /* Exibe a lista e recebe destino desejado */
+
+            Cidade *cidade = NULL;
+            char nomeDestinoUsuario[200];
+            while(cidade == NULL)
+            {
+                imprimeListaPaises(*listaPaises, 0);
+
+                printf("Informe o destino (nome da cidade): ");
+
+                scanf("%[^\n]", nomeDestinoUsuario);
+                while (getchar() != '\n'); //limpa buffer 
+
+                cidade = buscarCidadePorNome(*listaPaises, nomeDestinoUsuario);
+                
+                if(cidade == NULL)
+                {
+                    system("cls||clear");
+                    puts("Cidade não existe no catálogo. ");
+                    puts("Aperte qualquer tecla para tentar novamente.");
+                    getchar();
+                }
+            }           
+
+            addCliente(cidade, 1);  
+            
+            imprimirDestinoEscolhido(*listaPaises, cidade);
+
         }
         if(op==2)
         {
-            /* vai escolher o destino */
+            system("cls||clear");
+            /* Roda a arvore de decisão */
+
             int escolhaId = 0;
+
             escolhaId = escolheDestino(raiz); 
-            Cidade *cidadeEscolhida = buscarCidade(*listaPaises, escolhaId);
-            addCliente(escolhaId, cidadeEscolhida, 2); 
-            imprimeCidade(cidadeEscolhida, 0);
+           
+            Cidade *cidadeEscolhida = buscarCidadePorId(*listaPaises, escolhaId);
+
+            addCliente(cidadeEscolhida, 2); 
+
+            imprimirDestinoEscolhido(*listaPaises, cidadeEscolhida);
         }
         
-        printf("Obriga pela preferência!");
-        printf("Deseja continuar?(s/n)");
-        scanf("%c", &escolha); 
-        getchar(); 
-        if(escolha=='s')
-        {
-            printf("Aperte 1 caso já saiba qual é o destino da sua viagem.\n");
-            printf("Aperte 2 caso ainda esteja indeciso.\n"); 
-            scanf("%d", &op); 
-            getchar(); 
-        }
-        else
-        {
-            printf("Finalizando...\n"); 
-            op=0; 
-        }
+        printf("Obrigado pela preferência!\n\n");
     }
 
 }
 
 void prepararPaisesECidades(Pais **listaPaises)
 {
-    //ver jeito melhor pq esse ta bomba
-    Pais *brasil = criarPais("Brasil");
-    Cidade *salvador = criarCidade(13);
-    insereCidade(&(brasil->listaCidades), salvador);
-    Cidade *rio_de_janeiro = criarCidade(15);
-    insereCidade(&(brasil->listaCidades), rio_de_janeiro);
 
-    inserePais(listaPaises, brasil);
+    /* acessa o arquivo de perguntas */
+    FILE *ptr=NULL;
 
-    Pais *japao = criarPais("Japão");
-    Cidade *toquio = criarCidade(25);
-    insereCidade(&(japao->listaCidades), toquio);
+    ptr = fopen(NOME_ARQUIVO, "rt"); 
+    if(ptr==NULL)
+    {
+        printf("\nErro ao abrir o arquivo.\n");
+        return;
+    }
 
-    inserePais(listaPaises, japao);
+    /* percorrer o arquivo */
+    char buffer[TAM_NOME];
+    char nomePais[TAM_NOME];
+    char nomeCidade[TAM_NOME];
+    int idCidade = -1;
+    int contador = 1;
+    while(!(feof(ptr)))
+    {
+       
+        if(contador%2 == 1)
+        {
+            fscanf(ptr, "%d %[^,], %[^\n]\n", &idCidade, nomePais, nomeCidade); 
+
+            Cidade *cidadeNova = criarCidade(idCidade, nomeCidade);
+
+            Pais *paisExistente = buscarPaisPorNome(*listaPaises, nomePais);
+            if(paisExistente != NULL)
+            {
+                insereCidade(&(paisExistente->listaCidades), cidadeNova);   
+            }
+            else
+            {
+                Pais *paisNovo = criarPais(nomePais);
+                insereCidade(&(paisNovo->listaCidades), cidadeNova);
+                inserePais(listaPaises, paisNovo);
+            }
+        }
+        else
+        {
+            fscanf(ptr, "%[^\n]s", buffer);
+        }
+        contador++;
+    }
+    
 }
 
 void prepararArvore(Arvore **raiz)
@@ -159,11 +221,11 @@ void prepararArvore(Arvore **raiz)
     *raiz = criarArvore(*raiz); 
     /* insere o resto dos nós */
     *raiz = criarArvore(*raiz); 
-    em_ordem(*raiz); 
+    // em_ordem(*raiz); 
     printf("\n\n");
 }
 
-Cidade *buscarCidade(Pais *listaPaises, int id)
+Cidade *buscarCidadePorId(Pais *listaPaises, int id)
 {
     Cidade *cidadeEscolhida = NULL;
 
@@ -184,29 +246,53 @@ Cidade *buscarCidade(Pais *listaPaises, int id)
 
         paisAtual = paisAtual->paisProx;
     }
+
+    return NULL;
 }
 
-void addCliente(int id, Cidade *destino, int tipoCliente)
+Cidade *buscarCidadePorNome(Pais *listaPaises, char *nomeCidade)
+{
+    Cidade *cidadeEscolhida = NULL;
+
+    Pais *paisAtual = listaPaises;
+    while(paisAtual != NULL)
+    {
+        Cidade *cidadeAtual = paisAtual->listaCidades;
+
+        while (cidadeAtual != NULL)
+        {
+            if(strcmp(nomeCidade, cidadeAtual->nome) == 0)
+            {
+                cidadeEscolhida = cidadeAtual;
+                return cidadeEscolhida;
+            }
+            cidadeAtual = cidadeAtual->cidadeProx;
+        }
+
+        paisAtual = paisAtual->paisProx;
+    }
+
+    return NULL;
+}
+
+void addCliente(Cidade *destino, int tipoCliente)
 {
     /* recebe o id do destino e atualiza na lista */
     if(destino==NULL)
     {
         return; 
     }
-    /* verificar o id */
-    if(destino->id==id)
+
+    if(tipoCliente==1)
     {
-        if(tipoCliente==1)
-        {
-            /* incrementa o tipo 1 (cliente decidido) */
-            destino->turista1++;
-        }
-        if(tipoCliente==2)
-        {
-            /* incrementa o tipo 2 (clientes indecisos) */
-            destino->turista2++; 
-        }   
+        /* incrementa o tipo 1 (cliente decidido) */
+        destino->turista1++;
     }
+    if(tipoCliente==2)
+    {
+        /* incrementa o tipo 2 (clientes indecisos) */
+        destino->turista2++; 
+    }  
 }
 
 void inserePais(Pais **listaPaises, Pais *paisNovo)
@@ -262,16 +348,74 @@ void imprimeCidade(Cidade *cidade, int debug)
         return;
     }
 
-    char nome[20];
-    lerPerguntaOuDestino(cidade->id, nome);
-        puts("  |");
-        printf("  --> %s", nome); 
+    puts("  |");
+    printf("  --> %s", cidade->nome); 
 
     if(debug)
     {
         printf("(tipo 1: %d, tipo 2: %d)", cidade->turista1, cidade->turista2); 
     }
     puts("");
+}
+
+void imprimirDestinoEscolhido(Pais* listaPaises, Cidade *cidade)
+{
+    system("clear||cls");
+    Pais *pais = buscarPaisPorCidade(listaPaises, cidade->id);
+    printf("\n\n%s\n", pais->nome);
+    imprimeCidade(cidade, 0);
+    puts("");
+}
+
+Pais *buscarPaisPorNome(Pais *listaPaises, char *nome)
+{
+    Pais *paisAtual = listaPaises;
+    Pais *paisEscolhido = NULL;
+
+    if(listaPaises == NULL)
+    {
+        // puts("Lista de países vazia");
+        return NULL;
+    }
+
+    while(paisAtual != NULL)
+    {
+        if(strcmp(paisAtual->nome, nome) == 0)
+        {
+            paisEscolhido = paisAtual;
+            return paisEscolhido;
+        }
+        paisAtual = paisAtual->paisProx;
+    }
+
+    return NULL;
+}
+
+Pais *buscarPaisPorCidade(Pais *listaPaises, int idCidade)
+{
+    if(listaPaises == NULL)
+    {
+        // puts("Lista de paises vazia");
+        return NULL;
+    }
+    
+    Cidade *cidadeEscolhida = NULL;
+
+    Pais *paisAtual = listaPaises;
+    while(paisAtual != NULL)
+    {
+        Cidade *cidadeAtual = paisAtual->listaCidades;
+
+        while (cidadeAtual != NULL)
+        {
+            if(cidadeAtual->id == idCidade)
+            {
+                return paisAtual;
+            }
+            cidadeAtual = cidadeAtual->cidadeProx;
+        }
+        paisAtual = paisAtual->paisProx;
+    }
 }
 
 void imprimeListaPaises(Pais *paises, int debug)
@@ -331,7 +475,7 @@ void insereCidade(Cidade **listaCidades, Cidade *cidadeNova)
     }
 }
 
-Cidade *criarCidade(int id)
+Cidade *criarCidade(int id, char *nome)
 {
     Cidade *cidade;
     cidade = (Cidade*)malloc(sizeof(Cidade)); 
@@ -343,6 +487,7 @@ Cidade *criarCidade(int id)
     }
 
     cidade->id = id;
+    strcpy(cidade->nome, nome);
     cidade->cidadeProx = NULL;
     cidade->turista1 = 0;
     cidade->turista2 = 0;
@@ -363,11 +508,21 @@ int escolheDestino(Arvore *raiz)
     if(raiz->sim !=NULL && raiz->nao!=NULL)
     {
         /* acessa a primeira pergunta id 16 */
-        char pergunta[200];
+        char pergunta[TAM_NOME];
         lerPerguntaOuDestino(raiz->id, pergunta); 
-        printf("%s\n", pergunta);
-        scanf("%c", &resposta); 
-        getchar(); 
+
+        while(resposta != 's' && resposta != 'n')
+        {
+            printf("\n%s\n\n", pergunta);
+            scanf("%c", &resposta); 
+            while(getchar() != '\n');
+
+            
+            if(resposta != 's' && resposta != 'n')
+            {
+                puts("Utilize somente 's' ou 'n' para responder");
+            }
+        }
         switch (resposta)
         {
         case 's':
@@ -384,7 +539,7 @@ int escolheDestino(Arvore *raiz)
     else
     {
         /* se for folha, retorna o local (id do destino) */
-        char destino[200];
+        char destino[TAM_NOME];
         lerPerguntaOuDestino(raiz->id, destino);
         return raiz->id; 
     }
@@ -478,7 +633,7 @@ void lerPerguntaOuDestino(int id, char *string)
 {
     /* acessa o arquivo de perguntas */
     FILE *ptr=NULL;
-    char retorno[200];
+    char retorno[TAM_NOME];
     int idLido = 0; 
     ptr = fopen(NOME_ARQUIVO, "rt"); 
     if(ptr==NULL)
@@ -493,9 +648,11 @@ void lerPerguntaOuDestino(int id, char *string)
         if(id == idLido) 
         {
             strcpy(string, retorno);
+            fclose(ptr); 
+            return;
         }
     }
-    fclose(ptr); 
+  
 }
 
 void em_ordem(Arvore *raiz)
@@ -511,7 +668,7 @@ void imprimeImg(char *nomeArq)
 {
     FILE *ptr=NULL;
     char file[50];
-    char linha[200];
+    char linha[TAM_NOME];
     strcpy(file, nomeArq); 
     ptr = fopen(file, "rt");
     if(ptr==NULL)
