@@ -41,6 +41,8 @@ void imprimeListaPaises(Pais *listaPaises);
 
 int escolheDestino(Arvore *raiz); 
 
+Cidade *buscarCidade(Pais *listaPaises, int id);
+
 Arvore *inserirNodos(Arvore *raiz, int n);
 
 Arvore *criarArvore(Arvore *raiz);
@@ -90,10 +92,13 @@ void menu(Arvore *raiz, Pais **listaPaises)
     
     while(1)
     {
+        
         int escolhaId = 0;
         escolhaId = escolheDestino(raiz); 
-        // addCliente(escolhaId, destino, 2); 
-        // printf("")
+        Cidade *cidadeEscolhida = buscarCidade(*listaPaises, escolhaId);
+        addCliente(escolhaId, cidadeEscolhida, 2); 
+        imprimeCidade(cidadeEscolhida);
+        
     }
 
 }
@@ -124,6 +129,29 @@ void prepararArvore(Arvore **raiz)
     *raiz = criarArvore(*raiz); 
     em_ordem(*raiz); 
     printf("\n\n");
+}
+
+Cidade *buscarCidade(Pais *listaPaises, int id)
+{
+    Cidade *cidadeEscolhida = NULL;
+
+    Pais *paisAtual = listaPaises;
+    while(paisAtual != NULL)
+    {
+        Cidade *cidadeAtual = paisAtual->listaCidades;
+
+        while (cidadeAtual != NULL)
+        {
+            if(cidadeAtual->id == id)
+            {
+                cidadeEscolhida = cidadeAtual;
+                return cidadeEscolhida;
+            }
+            cidadeAtual = cidadeAtual->cidadeProx;
+        }
+
+        paisAtual = paisAtual->paisProx;
+    }
 }
 
 void mostrarTitulo()
@@ -209,7 +237,7 @@ void imprimeCidade(Cidade *cidade)
 
     char nome[20];
     lerPerguntaOuDestino(cidade->id, nome);
-    printf("%s", nome); 
+    printf("%s(tipo 1: %d, tipo 2: %d)", nome, cidade->turista1, cidade->turista2); 
 }
 
 void imprimeListaPaises(Pais *paises)
@@ -324,10 +352,8 @@ int escolheDestino(Arvore *raiz)
         /* se for folha, retorna o local (id do destino) */
         char destino[200];
         lerPerguntaOuDestino(raiz->id, destino);
-        printf("%s\n", destino);
         return raiz->id; 
     }
-    
 }
 
 Arvore *inserirNodos(Arvore *raiz, int n)
