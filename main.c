@@ -728,8 +728,10 @@ void contarClientes(Pais *listaPaises, int tipo)
     {
         return; 
     }
-    Pais *aux=NULL;
-    aux = listaPaises;  
+    Pais *paisAtual=NULL;
+    paisAtual = listaPaises;  
+    Cidade *cidadeAtual=NULL;
+
     if(tipo==1)
     {
         /* vai listar os países com clientes do tipo 1 */
@@ -750,43 +752,43 @@ void contarClientes(Pais *listaPaises, int tipo)
         /* vai listar os países não visitados */
         printf("\n\n----LOCAIS NÃO VISITADOS-----\n");
     }
-    while (aux!=NULL)
+    while (paisAtual!=NULL)
     {
-        while (aux->listaCidades!=NULL)
+        cidadeAtual = paisAtual->listaCidades;
+        while (cidadeAtual!=NULL)
         {
             switch (tipo)
             {
             case 1:  
-                if(aux->listaCidades->turista1!=0)
+                if(cidadeAtual->turista1!=0)
                 { 
-                    printf("%s : %s\n",aux->nome ,aux->listaCidades->nome); 
+                    printf("%s : %s\n", paisAtual->nome, cidadeAtual->nome); 
                 }
                 break;
             case 2: 
-                if(aux->listaCidades->turista2!=0)
+                if(cidadeAtual->turista2!=0)
                 {
-                    printf("%s : %s\n", aux->nome ,aux->listaCidades->nome); 
+                    printf("%s : %s\n", paisAtual->nome, cidadeAtual->nome); 
                 }
                 break; 
             case 3:
-                if(aux->listaCidades->turista1!=0 || aux->listaCidades->turista2!=0)
+                if(cidadeAtual->turista1!=0 || cidadeAtual->turista2!=0)
                 {
-                    printf("%s : %s\n", aux->nome ,aux->listaCidades->nome);
+                    printf("%s : %s\n", paisAtual->nome, cidadeAtual->nome);
                 }
                 break;
             case 0:
-                if(aux->listaCidades->turista1==0 && aux->listaCidades->turista2==0)
+                if(cidadeAtual->turista1==0 && cidadeAtual->turista2==0)
                 {
-                    printf("%s : %s\n", aux->nome ,aux->listaCidades->nome);
+                    printf("%s : %s\n", paisAtual->nome, cidadeAtual->nome);
                 }
                 break;
             default:
                 break;
             }
-            aux->listaCidades = aux->listaCidades->cidadeProx; 
+            cidadeAtual = cidadeAtual->cidadeProx;
         }
-        aux = aux->paisProx; 
-        
+        paisAtual = paisAtual->paisProx;   
     }
     
 
