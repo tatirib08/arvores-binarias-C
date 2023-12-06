@@ -151,6 +151,7 @@ void menu(Arvore *raiz, Pais **listaPaises)
     contarClientes(*listaPaises, 2); 
     contarClientes(*listaPaises, 3);
     contarClientes(*listaPaises, 0);
+    contarClientes(*listaPaises, 4);
 
 }
 
@@ -809,6 +810,11 @@ void contarClientes(Pais *listaPaises, int tipo)
     paisAtual = listaPaises;  
     Cidade *cidadeAtual=NULL;
 
+    Pais *paisMaisVisitado = NULL;
+    int paisMaisVisitadoQntTuristas = 0;
+    Cidade *cidadeMaisVisitada = NULL;
+    int cidadeMaisVisitadaQntTuristas = 0;
+
     if(tipo==1)
     {
         /* vai listar os países com clientes do tipo 1 */
@@ -831,9 +837,11 @@ void contarClientes(Pais *listaPaises, int tipo)
     }
     while (paisAtual!=NULL)
     {
+        int totalTuristasPais = 0;
         cidadeAtual = paisAtual->listaCidades;
         while (cidadeAtual!=NULL)
         {
+            int totalTuristasCidade = 0;
             switch (tipo)
             {
             case 1:  
@@ -859,14 +867,39 @@ void contarClientes(Pais *listaPaises, int tipo)
                 {
                     printf("%s : %s\n", paisAtual->nome, cidadeAtual->nome);
                 }
+            case 4:
+                totalTuristasCidade = cidadeAtual->turista1 + cidadeAtual->turista2;
                 break;
             default:
                 break;
             }
+
+            if(cidadeMaisVisitadaQntTuristas < totalTuristasCidade)
+            {
+                cidadeMaisVisitadaQntTuristas = totalTuristasCidade;
+                cidadeMaisVisitada = cidadeAtual;
+            }
             cidadeAtual = cidadeAtual->cidadeProx;
+            totalTuristasPais += totalTuristasCidade;
+        }
+        if(paisMaisVisitadoQntTuristas < totalTuristasPais)
+        {
+            paisMaisVisitadoQntTuristas = totalTuristasPais;
+            paisMaisVisitado = paisAtual;
         }
         paisAtual = paisAtual->paisProx;   
     }
     
+    if(tipo==4)
+    {
+        /* vai listar os países não visitados */
+        printf("\n\n----PAÍS E CIDADE MAIS VISITADOS -----\n");
+        if(cidadeMaisVisitada != NULL && paisMaisVisitado != NULL)
+        {
+            printf("País: %s\n", paisMaisVisitado->nome);
+            printf("Cidade: %s\n", cidadeMaisVisitada->nome);
+        }
+
+    }
 
 }
