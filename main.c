@@ -44,7 +44,11 @@ Pais *criarPais(char *paisNome);
 
 void insereCidade(Cidade **listaCidades, Cidade *cidadeNova);
 
+void limparCidades(Cidade **listaCidades);
+
 void inserePais(Pais **listaPaises, Pais *paisNovo); 
+
+void limparPaises(Pais **listaPaises);
 
 void imprimePais(Pais *pais, int debug); 
 
@@ -116,38 +120,66 @@ void prepararEstruturas(Arvore **raiz, Pais **listaPaises)
 void menu(Arvore *raiz, Pais **listaPaises)
 {
     int op = 1; 
-    while(op==1 || op==2)
+
+    while(1)
     {
+
         puts("|--------------------AGÊNCIA DE VIAGENS-------------------|");
         char escolha; 
-     
+    
         printf("\n\n"); 
         imprimeImg("aviao1.txt"); 
         printf("\n\n"); 
         printf("\n\n"); 
-        printf("Aperte 1 caso já saiba qual é o destino da sua viagem.\n");
-        printf("Aperte 2 caso ainda esteja indeciso.\n"); 
-        printf("Aperte 3 para sair.\n");
+        printf("\n--------MENU---------\n"); 
+        printf("Escolha uma das opções:\n"); 
+        printf("1: caso já saiba qual é o destino da sua viagem.\n");
+        printf("2: caso ainda esteja indeciso.\n"); 
+        printf("3: mostrar lista de destinos possíveis.\n");
+        printf("4: mostrar relatório de viagens.\n");
+        printf("5: sair.\n"); 
         scanf("%d", &op); 
-        getchar(); 
+        while(getchar() != '\n'); 
 
-        if(op==1)
+        switch (op)
         {
-            atenderTipo1(*listaPaises);
-        }
-        if(op==2)
-        {
-            atenderTipo2(*listaPaises, raiz);
+            case 1: 
+                atenderTipo1(*listaPaises);
+                break;
+            case 2: 
+                atenderTipo2(*listaPaises, raiz);
+                break;
+            case 3:
+                system("cls||clear");
+                imprimeListaPaises(*listaPaises, 0); 
+                getchar();
+                break; 
+            case 4: 
+                system("cls||clear");
+                contarClientes(*listaPaises, 1); 
+                contarClientes(*listaPaises, 2); 
+                contarClientes(*listaPaises, 3);
+                contarClientes(*listaPaises, 0);
+                contarClientes(*listaPaises, 4);
+                getchar();
+                break;
+            case 5: 
+                printf("\n\nObrigado pela preferência!\n\n");
+                exit(0);
+                break;
+            default:
+                break;
         }
         
-        printf("\n\nObrigado pela preferência!\n\n");
+        if(!(op==1 || op==2 || op==3 || op==4 || op==5))
+        {
+            system("cls||clear");
+            puts("Informe um numero válido (1-5)");
+            getchar();
+        }
     }
-    contarClientes(*listaPaises, 1); 
-    contarClientes(*listaPaises, 2); 
-    contarClientes(*listaPaises, 3);
-    contarClientes(*listaPaises, 0);
-    contarClientes(*listaPaises, 4);
-
+   
+    limparPaises(listaPaises);
 }
 
 void atenderTipo1(Pais *listaPaises)
@@ -350,6 +382,24 @@ void inserePais(Pais **listaPaises, Pais *paisNovo)
     }
 }
 
+void limparPaises(Pais **listaPaises)
+{
+    if(listaPaises == NULL)
+    {
+        return;
+    }
+
+    Pais *paisAnterior = NULL;
+    Pais *paisAtual = *listaPaises;
+    while(paisAtual != NULL)
+    {
+        paisAnterior = paisAtual;
+        paisAtual = paisAtual->paisProx;
+        limparCidades(&(paisAnterior->listaCidades));
+        free(paisAnterior);
+    }
+}
+
 void imprimePais(Pais *pais, int debug)
 {
     if(pais == NULL)
@@ -507,6 +557,23 @@ void insereCidade(Cidade **listaCidades, Cidade *cidadeNova)
             cidadeAtual = cidadeAtual->cidadeProx;
         }
         cidadeAtual->cidadeProx = cidadeNova;
+    }
+}
+
+void limparCidades(Cidade **listaCidades)
+{
+    if(listaCidades == NULL)
+    {
+        return;
+    }
+
+    Cidade *cidadeAnterior = NULL;
+    Cidade *cidadeAtual = *listaCidades;
+    while(cidadeAtual != NULL)
+    {
+        cidadeAnterior = cidadeAtual;
+        cidadeAtual = cidadeAtual->cidadeProx;
+        free(cidadeAnterior);
     }
 }
 
@@ -807,10 +874,8 @@ void contarClientes(Pais *listaPaises, int tipo)
     Cidade *cidadeAtual=NULL;
 
     Pais *paisMaisVisitado = NULL;
-    Pais *paisMaisVisitadoEmpate = NULL;
     int paisMaisVisitadoQntTuristas = 0;
     Cidade *cidadeMaisVisitada = NULL;
-    Cidade *cidadeMaisVisitadaEmpate = NULL;
     int cidadeMaisVisitadaQntTuristas = 0;
 
     if(tipo==1)
@@ -876,12 +941,8 @@ void contarClientes(Pais *listaPaises, int tipo)
             {
                 cidadeMaisVisitadaQntTuristas = totalTuristasCidade;
                 cidadeMaisVisitada = cidadeAtual;
-                cidadeMaisVisitadaEmpate = NULL;
             }
-            else if(cidadeMaisVisitadaQntTuristas == totalTuristasCidade)
-            {
-                cidadeMaisVisitadaEmpate = cidadeAtual;
-            }
+
             cidadeAtual = cidadeAtual->cidadeProx;
             totalTuristasPais += totalTuristasCidade;
         }
@@ -889,31 +950,60 @@ void contarClientes(Pais *listaPaises, int tipo)
         {
             paisMaisVisitadoQntTuristas = totalTuristasPais;
             paisMaisVisitado = paisAtual;
-            paisMaisVisitadoEmpate = NULL;
         }
-        else if(paisMaisVisitadoQntTuristas == totalTuristasPais)
-        {
-            paisMaisVisitadoEmpate = paisAtual;
-        }
+
         paisAtual = paisAtual->paisProx;   
     }
     
     if(tipo==4)
     {
-        /* vai listar os países não visitados */
         printf("\n\n----PAÍS E CIDADE MAIS VISITADOS -----\n");
         if(cidadeMaisVisitada != NULL && paisMaisVisitado != NULL)
         {
-            printf("País: %s", paisMaisVisitado->nome);
-            if(paisMaisVisitadoEmpate != NULL)
+
+            printf("Pais: %s", paisMaisVisitado->nome);
+            paisAtual = listaPaises;
+            
+
+            while (paisAtual!=NULL)
             {
-                printf(" e %s (empate)", paisMaisVisitadoEmpate->nome);
+                int totalTuristasPais = 0;
+                cidadeAtual = paisAtual->listaCidades;
+                while (cidadeAtual!=NULL)
+                {
+                    int totalTuristasCidade = cidadeAtual->turista1 + cidadeAtual->turista2;
+                    cidadeAtual = cidadeAtual->cidadeProx;
+                    totalTuristasPais += totalTuristasCidade;
+                }
+
+                if(totalTuristasPais == paisMaisVisitadoQntTuristas && strcmp(paisAtual->nome, paisMaisVisitado->nome) != 0)
+                {
+                    printf(", %s", paisAtual->nome);
+                }
+                paisAtual = paisAtual->paisProx;   
             }
             puts("");
+
             printf("Cidade: %s", cidadeMaisVisitada->nome);
-            if(cidadeMaisVisitadaEmpate != NULL)
+
+            paisAtual = listaPaises;
+            while (paisAtual!=NULL)
             {
-                printf(" e %s (empate)", cidadeMaisVisitadaEmpate->nome);
+                int totalTuristasPais = 0;
+                cidadeAtual = paisAtual->listaCidades;
+                while (cidadeAtual!=NULL)
+                {
+                    int totalTuristasCidade = cidadeAtual->turista1 + cidadeAtual->turista2;
+                    totalTuristasPais += totalTuristasCidade;
+                    if(totalTuristasCidade == cidadeMaisVisitadaQntTuristas && strcmp(cidadeAtual->nome, cidadeMaisVisitada->nome) != 0)
+                    {
+                        printf(", %s", cidadeAtual->nome);
+                    }
+
+                    cidadeAtual = cidadeAtual->cidadeProx;
+                }
+
+                paisAtual = paisAtual->paisProx;   
             }
             puts("");
         }
