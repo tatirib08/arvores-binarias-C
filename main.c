@@ -6,7 +6,10 @@
 #define QTD_CIDADES 16
 #define TAM_NOME 200
 
-/*  programa que escolhe os destinos das viagens */
+/*  
+    programa que escolhe os destinos das viagens 
+    Alunos: Alan Vitor de Almeida Nascimento, Tatiana Ribeiro Oliveira
+*/
 typedef struct cidade{
     int id;
     char nome[TAM_NOME];
@@ -145,7 +148,7 @@ void menu(Arvore *raiz, Pais **listaPaises)
             atenderTipo2(*listaPaises, raiz);
         }
         
-        printf("Obrigado pela preferência!\n\n");
+        printf("\n\nObrigado pela preferência!\n\n");
     }
     contarClientes(*listaPaises, 1); 
     contarClientes(*listaPaises, 2); 
