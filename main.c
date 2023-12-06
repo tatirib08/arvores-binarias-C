@@ -94,7 +94,7 @@ void imprimeImg(char *nomeArq);
     mostrar o país e o sítio mais visitado pelos dois tipos de clientes
 
 */
-
+void printFotoSitio(int id); 
 void contarClientes(Pais *listaPaises, int tipo);
 
 int main()
@@ -184,6 +184,7 @@ void atenderTipo1(Pais *listaPaises)
     addCliente(cidade, 1);  
     
     imprimirDestinoEscolhido(listaPaises, cidade);
+    printFotoSitio(cidade->id); 
 }
 
 void atenderTipo2(Pais *listaPaises, Arvore* raiz)
@@ -200,6 +201,8 @@ void atenderTipo2(Pais *listaPaises, Arvore* raiz)
     addCliente(cidadeEscolhida, 2); 
 
     imprimirDestinoEscolhido(listaPaises, cidadeEscolhida);
+
+    printFotoSitio(cidadeEscolhida->id); 
 }
 
 void prepararPaisesECidades(Pais **listaPaises)
@@ -720,6 +723,80 @@ void imprimeImg(char *nomeArq)
         printf("%s\n", linha); 
     }
     fclose(ptr);
+}
+
+void printFotoSitio(int id)
+{
+    /* recebe o id do destino e imprime a imagem correspondente */
+    switch (id)
+    {
+    case 1:
+        /* Macchu Picchu */
+        imprimeImg("montanha.txt");
+        break;
+    case 3: 
+        /* Pequim */
+        imprimeImg("cidade2.txt");
+        break;
+    case 5:
+        /* Niagara Falls */
+        imprimeImg("cataratas.txt");
+        break;
+    case 7: 
+        /* Interlaken */
+        imprimeImg("montanha2.txt");
+        break;
+    case 9:
+        /* cancún */
+        imprimeImg("praia.txt");
+        break;
+    case 11:
+        /* punta cana */
+        imprimeImg("praia3.txt");
+        break;
+    case 13:
+        /* salvador */
+        imprimeImg("praia2.txt");
+        break;
+    case 15:
+        /* rio de janeiro */
+        imprimeImg("cidade.txt");
+        break;
+    case 17:
+        /* roma */
+        imprimeImg("escultura.txt");
+        break;
+    case 19:
+        /* atenas */
+        imprimeImg("templo.txt");
+        break;
+    case 21:
+        /* barcelona */
+        imprimeImg("cidade3.txt");
+        break;
+    case 23:
+        /* sydney */
+        imprimeImg("cidade4.txt");
+        break;
+    case 25:
+        /* tóquio */
+        imprimeImg("cidade5.txt");
+        break;
+    case 27:
+        /* ibiza */
+        imprimeImg("cidade6.txt");
+        break;
+    case 29:
+        /* dublin */
+        imprimeImg("castelo.txt");
+        break;
+    case 31:
+        /* edimburgo */
+        imprimeImg("castelo2.txt");
+        break;
+    default:
+        break;
+    }
 }
 
 void contarClientes(Pais *listaPaises, int tipo)
