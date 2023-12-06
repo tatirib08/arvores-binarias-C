@@ -88,16 +88,8 @@ void addCliente(Cidade *destino, int tipoCliente);
 
 void imprimeImg(char *nomeArq);
 
-/* funções para fazer 
-
-    listar todos os paises visitados pelos turistas tipo 1
-    listar todos os paises visitados pelos turistas tipo 2
-    listar todos os paises visitados no total
-    listar todos os paises não visitados
-    mostrar o país e o sítio mais visitado pelos dois tipos de clientes
-
-*/
 void printFotoSitio(int id); 
+
 void contarClientes(Pais *listaPaises, int tipo);
 
 int main()
@@ -815,8 +807,10 @@ void contarClientes(Pais *listaPaises, int tipo)
     Cidade *cidadeAtual=NULL;
 
     Pais *paisMaisVisitado = NULL;
+    Pais *paisMaisVisitadoEmpate = NULL;
     int paisMaisVisitadoQntTuristas = 0;
     Cidade *cidadeMaisVisitada = NULL;
+    Cidade *cidadeMaisVisitadaEmpate = NULL;
     int cidadeMaisVisitadaQntTuristas = 0;
 
     if(tipo==1)
@@ -882,6 +876,11 @@ void contarClientes(Pais *listaPaises, int tipo)
             {
                 cidadeMaisVisitadaQntTuristas = totalTuristasCidade;
                 cidadeMaisVisitada = cidadeAtual;
+                cidadeMaisVisitadaEmpate = NULL;
+            }
+            else if(cidadeMaisVisitadaQntTuristas == totalTuristasCidade)
+            {
+                cidadeMaisVisitadaEmpate = cidadeAtual;
             }
             cidadeAtual = cidadeAtual->cidadeProx;
             totalTuristasPais += totalTuristasCidade;
@@ -890,6 +889,11 @@ void contarClientes(Pais *listaPaises, int tipo)
         {
             paisMaisVisitadoQntTuristas = totalTuristasPais;
             paisMaisVisitado = paisAtual;
+            paisMaisVisitadoEmpate = NULL;
+        }
+        else if(paisMaisVisitadoQntTuristas == totalTuristasPais)
+        {
+            paisMaisVisitadoEmpate = paisAtual;
         }
         paisAtual = paisAtual->paisProx;   
     }
@@ -900,8 +904,18 @@ void contarClientes(Pais *listaPaises, int tipo)
         printf("\n\n----PAÍS E CIDADE MAIS VISITADOS -----\n");
         if(cidadeMaisVisitada != NULL && paisMaisVisitado != NULL)
         {
-            printf("País: %s\n", paisMaisVisitado->nome);
-            printf("Cidade: %s\n", cidadeMaisVisitada->nome);
+            printf("País: %s", paisMaisVisitado->nome);
+            if(paisMaisVisitadoEmpate != NULL)
+            {
+                printf(" e %s (empate)", paisMaisVisitadoEmpate->nome);
+            }
+            puts("");
+            printf("Cidade: %s", cidadeMaisVisitada->nome);
+            if(cidadeMaisVisitadaEmpate != NULL)
+            {
+                printf(" e %s (empate)", cidadeMaisVisitadaEmpate->nome);
+            }
+            puts("");
         }
 
     }
