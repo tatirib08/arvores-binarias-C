@@ -712,7 +712,8 @@ void imprimeImg(char *nomeArq)
     FILE *ptr=NULL;
     char file[50];
     char linha[TAM_NOME];
-    strcpy(file, nomeArq); 
+    strcpy(file, "ascii/"); 
+    strcat(file, nomeArq);
     ptr = fopen(file, "rt");
     if(ptr==NULL)
     {
